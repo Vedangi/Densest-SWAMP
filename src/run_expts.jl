@@ -269,7 +269,11 @@ function run_expts(method::Int64, obj::Int64, datafolder::String)
             # method_name = "greedy_maxsi_proj"
             reward_d_proj = project_to_convex(reward_d,issup_list)
             # gp_res = greedy_peeling_with_se(H,reward_d_proj,s_d)
-            gp_res = greedy_peeling_with_se_edge_list(edge_list,reward_d_proj,s_d,vertex2edges)
+            s_d_proj = Vector{Vector{Float64}}()
+            for i in 1:length(reward_d_proj)
+                push!(s_d_proj,maximal_si(reward_d_proj[i]))
+            end
+            gp_res = greedy_peeling_with_se_edge_list(edge_list,reward_d_proj,s_d_proj,vertex2edges)
             optsol = gp_res["optsol"]
 	        time_req = gp_res["total_dt"]
             _,etouchS_edges = etouchS(H,optsol)
