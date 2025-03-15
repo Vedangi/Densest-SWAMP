@@ -15,5 +15,5 @@ The processed data is organized  into two directories
 The 'src' folder contains all the source code for objective functions, methods, and supporting helper functions.
 Demo files are provided for running the ILP-based methods, the flow-based projection methods, and various greedy methods.
 
-The run_expts.jl file contains code to execute each of these methods for each objective over a given hypergraph, and the results are saved in the results folder. We add some A set of sample results for small Trivago dataset is included.
+The run_expts.jl file contains code to execute each of these methods for each objective over a given hypergraph, and the results are saved in the results folder. A set of sample results is also included in the 'results' folder.
 
