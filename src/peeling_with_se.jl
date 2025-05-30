@@ -8,7 +8,7 @@ function g_value_edge(
     S::Vector{Int},
     r::Vector{Vector{Float64}},
     s::Vector{Vector{Float64}},
-    vertex2edges::Dict{Int, Vector{Int}},
+    vertex2edges::Dict{Int,Vector{Int}},
 )
     total = 0.0
     # Iterate over edges incident to v.
@@ -30,46 +30,43 @@ function g_value_edge(
     return total
 end
 
-# greedy_peeling_non_sup: Iteratively removes vertices with the smallest 
+# peeling_with_se: Iteratively removes vertices with the smallest 
 # g-value using a priority queue, updating neighbors' g-values, and tracks 
 # the best objective value (via hedensity_non_uniform).
-function greedy_peeling_with_se(
+function peeling_with_se(
     # edge_list::Vector{Vector{Int64}},
-    H :: SparseMatrixCSC{Tf, Ti},
+    H::SparseMatrixCSC{Tf,Ti},
     r::Vector{Vector{Float64}},
     s::Vector{Vector{Float64}},
-)where {Ti <: Integer, Tf <: AbstractFloat}
-   
-
+) where {Ti<:Integer,Tf<:AbstractFloat}
 
     #S is a vector from 1:N
     total_dt = @elapsed begin
-        n = size(H,2)
-        m = size(H,1)
-        
+        n = size(H, 2)
+        m = size(H, 1)
+
         # Start with S as a vector of all vertices.
-        # S = copy(vertices)
         S = Vector(1:n)
         best_ans = hedensity_non_uniform(H, S, r)
-        best_ans = round(best_ans , digits=5)
+        best_ans = round(best_ans, digits=5)
         best_S = copy(S)
         peeling_ord = Int[]  # will record the order of removals
 
         edge_list = incidence2elist(H)
         # Build mapping: vertex -> list of incident edges.
         vertex2edges = build_vertex_to_edges(edge_list)
-        
+
         # Priority queue: key = vertex, priority = current g_value (lower means more likely to peel).
-        pq = PriorityQueue{Int, Float64}()
+        pq = PriorityQueue{Int,Float64}()
         # We'll also keep a dictionary of current g values for convenience.
-        curr_g = Dict{Int, Float64}()
+        curr_g = Dict{Int,Float64}()
         for v in S
             gv = g_value_edge(edge_list, v, S, r, s, vertex2edges)
             curr_g[v] = gv
             enqueue!(pq, v => gv)
         end
 
-        # Greedy peeling: while S is not empty, remove the vertex with smallest g value.
+        # peeling: while S is not empty, remove the vertex with smallest g value.
         while !isempty(S)
             # Remove vertex with smallest g(v; S).
             # println("Current pq is: ", pq)
@@ -110,14 +107,14 @@ end
 
 
 """
-    greedy_peeling_with_se_edge_list(
+    peeling_with_se_edge_list(
         edge_list,
         r,
         s,
         vertex2edges
     )
 
-Perform greedy peeling on a hypergraph represented by an edge list.
+Perform peeling on a hypergraph represented by an edge list.
 - `edge_list` is a Vector of edges (each a Vector of Int vertex IDs).
 - `r` and `s` are vectors of reward vectors for each edge.
 - `vertex2edges` is a mapping from vertex (Int) to a Vector of incident edge indices.
@@ -127,11 +124,11 @@ The function returns a dictionary containing:
     - "peeling_ord": The order in which vertices were removed.
     - "total_dt": Total computation time.
 """
-function greedy_peeling_with_se_edge_list(
+function peeling_with_se_edge_list(
     edge_list::Vector{Vector{Int}},
     r::Vector{Vector{Float64}},
     s::Vector{Vector{Float64}},
-    vertex2edges::Dict{Int, Vector{Int}}
+    vertex2edges::Dict{Int,Vector{Int}}
 )
     total_dt = @elapsed begin
         # Determine all vertices from vertex2edges (assumed to cover all vertices)
@@ -145,15 +142,15 @@ function greedy_peeling_with_se_edge_list(
 
         # Priority queue: key = vertex, priority = current g_value.
         # curr_g keeps track of the current g value for each vertex.
-        pq = PriorityQueue{Int, Float64}()
-        curr_g = Dict{Int, Float64}()
+        pq = PriorityQueue{Int,Float64}()
+        curr_g = Dict{Int,Float64}()
         for v in S
             gv = g_value_edge(edge_list, v, S, r, s, vertex2edges)
             curr_g[v] = gv
             enqueue!(pq, v => gv)
         end
 
-        # Greedy peeling: remove the vertex with smallest g value iteratively.
+        # peeling: remove the vertex with smallest g value iteratively.
         while !isempty(S)
             v = dequeue!(pq)
             push!(peeling_ord, v)

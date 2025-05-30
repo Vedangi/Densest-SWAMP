@@ -21,20 +21,20 @@
 #   - "total_dt"  : Total execution time of the algorithm.
 #
 using DataStructures
-function greedy_peeling_by_degree(
-    H::SparseMatrixCSC{Tf, Ti},
-    Ht::SparseMatrixCSC{Tf, Ti},
+function peeling_by_degree(
+    H::SparseMatrixCSC{Tf,Ti},
+    Ht::SparseMatrixCSC{Tf,Ti},
     r::Vector{Vector{Float64}},
-) where {Ti <: Integer, Tf <: AbstractFloat} 
+) where {Ti<:Integer,Tf<:AbstractFloat}
     total_dt = @elapsed begin
-        
+
         m, n = size(H) # number of edges, vertices
 
         # compute the degrees of vertices
         deg = H_deg(H)
 
         total_wts = hedensity_non_uniform(H, Vector(1:n), r) * n
-        best_ans = total_wts / n 
+        best_ans = total_wts / n
         best_size = n
         best_S = Vector(1:n)
         S = Vector(1:n)
@@ -43,28 +43,28 @@ function greedy_peeling_by_degree(
         # indicate  
         # whether one node has been peeled off or not
         # whether one edge has already not been fully contained
-        exists_v = ones(Bool, n) 
+        exists_v = ones(Bool, n)
         contained_e = ones(Bool, m)
 
         # keep vertices sorted by degree
-        pq = PriorityQueue{Ti, Tf}() 
-        curr_deg = zeros(n) 
+        pq = PriorityQueue{Ti,Tf}()
+        curr_deg = zeros(n)
 
 
         curr_wts = total_wts
         # println("Initial wts is: ", curr_wts)
 
-        for u in 1:n 
-        
+        for u in 1:n
+
             curr_deg[u] = deg[u]
 
             exists_v[u] = true
-            enqueue!(pq, u=>curr_deg[u])
+            enqueue!(pq, u => curr_deg[u])
         end
         for e in 1:m
-            contained_e[e] = true  
+            contained_e[e] = true
         end
-        
+
         for i in 1:n
             # delete the vertex with the smallest degree
             # println("Current pq is: ", pq)
@@ -73,8 +73,8 @@ function greedy_peeling_by_degree(
             exists_v[u] = false
             peeling_ord[i] = u
             # curr_wts -= curr_deg[u]
-            S = setdiff(S,[u])
-            curr_wts = hedensity_non_uniform(H, S, r)*length(S) 
+            S = setdiff(S, [u])
+            curr_wts = hedensity_non_uniform(H, S, r) * length(S)
             # println("curr_wts using hedensity_non_uniform function is ", curr_wts)
 
             for nzi in H.colptr[u]:(H.colptr[u+1]-1)
@@ -84,16 +84,16 @@ function greedy_peeling_by_degree(
                 if !contained_e[e]
                     continue
                 end
-                contained_e[e] = false 
-                for nzj in Ht.colptr[e]:(Ht.colptr[e+1]-1) 
+                contained_e[e] = false
+                for nzj in Ht.colptr[e]:(Ht.colptr[e+1]-1)
                     v = Ht.rowval[nzj]
                     # we only process those vertices that
                     # haven't been peeled off
                     if !exists_v[v]
                         continue
                     end
-                
-                    curr_deg[v] -= Ht.nzval[nzj] 
+
+                    curr_deg[v] -= Ht.nzval[nzj]
                     pq[v] = curr_deg[v]
                 end
             end
@@ -106,29 +106,29 @@ function greedy_peeling_by_degree(
                 end
             end
         end
-        best_S = peeling_ord[n - best_size + 1:n]
+        best_S = peeling_ord[n-best_size+1:n]
 
-        
+
         # println("best_S: in this step is ", best_S, " with best_ans: ", best_ans, "lngth(best)S)", length(best_S))
     end
     return Dict(
-        "optval" => best_ans, 
+        "optval" => best_ans,
         "optsol" => best_S,
         "peeling_ord" => peeling_ord,
-        "total_dt" => total_dt, 
+        "total_dt" => total_dt,
     )
 end
 
 
 
 """
-    greedy_peeling_by_degree_edge_list(
+    peeling_by_degree_edge_list(
          edge_list,
          r,
          vertex2edges
     )
 
-Perform greedy peeling based on vertex degree on a hypergraph represented
+Perform peeling based on vertex degree on a hypergraph represented
 by an edge list. The vertex set is determined by extracting all unique vertices
 from `edge_list`.
 
@@ -144,18 +144,18 @@ Returns a dictionary with:
   - `"peeling_ord"`: The order in which vertices were removed.
   - `"total_dt"`: Total elapsed time.
 """
-function greedy_peeling_by_degree_edge_list(
+function peeling_by_degree_edge_list(
     edge_list::Vector{Vector{Int}},
     r::Vector{Vector{Float64}},
-    vertex2edges::Dict{Int, Vector{Int}}
+    vertex2edges::Dict{Int,Vector{Int}}
 )
     total_dt = @elapsed begin
         # 1. Determine all vertices from the edge_list.
         vertices = sort(unique(vcat(edge_list...)))
         n = length(vertices)
-        
+
         # 2. Compute the degree of each vertex (here, the degree is the number of incident edges).
-        deg = Dict{Int, Float64}()
+        deg = Dict{Int,Float64}()
         for v in vertices
             deg[v] = length(get(vertex2edges, v, []))
         end
@@ -173,8 +173,8 @@ function greedy_peeling_by_degree_edge_list(
         contained_e = trues(length(edge_list))
 
         # 5. Initialize a priority queue with the vertices and their current degrees.
-        pq = PriorityQueue{Int, Float64}()
-        curr_deg = Dict{Int, Float64}()
+        pq = PriorityQueue{Int,Float64}()
+        curr_deg = Dict{Int,Float64}()
         for v in vertices
             curr_deg[v] = deg[v]
             enqueue!(pq, v => curr_deg[v])
@@ -182,7 +182,7 @@ function greedy_peeling_by_degree_edge_list(
 
         curr_wts = total_wts
 
-        # 6. Greedy peeling loop.
+        # 6. peeling loop.
         for i in 1:n
             # Remove the vertex with smallest degree.
             v = dequeue!(pq)

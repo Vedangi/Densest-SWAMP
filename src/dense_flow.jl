@@ -36,7 +36,7 @@ function construct_network(n::Int, edges::Vector{Vector{Int}}, rewards_edges::Ve
     data = Float64[]
 
     # Add edges from each actual node to sink (capacity will be updated later)
-    for i in 0:(n - 1)
+    for i in 0:(n-1)
         actual_node = actual_start + i   # mapping: original node i → (2 + i)
         push!(row, actual_node)
         push!(col, t)
@@ -83,7 +83,7 @@ function set_lambda!(C::SparseMatrixCSC{Float64,Int}, n::Int, value::Float64)
     tot_nodes = size(C, 1)
     t = tot_nodes
     actual_start = 2
-    for i in 0:(n - 1)
+    for i in 0:(n-1)
         node = actual_start + i
         C[node, t] = value
     end
@@ -114,7 +114,7 @@ function density(edges::Vector{Vector{Int}}, S::Set{Int}, rewards_edges::Vector{
     total_reward = 0.0
     for (e, r) in zip(edges, rewards_edges)
         count = sum(x -> x in S, e)
-        total_reward += r[count + 1]  # adjust for 1-indexing
+        total_reward += r[count+1]  # adjust for 1-indexing
     end
     return isempty(S) ? 0.0 : total_reward / length(S)
 end

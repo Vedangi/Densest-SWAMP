@@ -1,5 +1,5 @@
 using CSV
-using MAT 
+using MAT
 using Printf
 using JSON
 using StatsBase
@@ -9,7 +9,7 @@ using CodecZlib
 using BenchmarkTools
 using SparseArrays
 using MatrixNetworks
-using LinearAlgebra 
+using LinearAlgebra
 using DataStructures
 using Combinatorics
 
@@ -18,7 +18,7 @@ include("../include/readdata.jl")
 include("../include/hlpp.jl")
 include("helpers.jl")
 include("hyper_format.jl")
-include("greedy_peeling_with_se.jl")
-include("greedy_peeling_by_degree.jl")
+include("peeling_with_se.jl")
+include("peeling_by_degree.jl")
 include("gendensubhyper-ILP.jl")
 include("dense_flow.jl")
