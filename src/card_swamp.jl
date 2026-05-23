@@ -190,7 +190,7 @@ function remove_nodes!(
 
         end
         # Clear vertex2edges[u]
-        empty!(vertex2edges[u])
+        delete!(vertex2edges[u])
 
     end
 
