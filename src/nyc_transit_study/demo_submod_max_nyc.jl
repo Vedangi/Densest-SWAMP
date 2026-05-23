@@ -66,7 +66,7 @@ end
 
 
 # ---- Example usage ----
-edges_list, line_names = load_nyc_edges_list("nyc_lines_hypergraph.txt")
+edges_list, line_names = load_nyc_edges_list("nyc_routes_hypergraph.txt")
 #find number of unique nodes in edges_list
 node_names = unique(vcat(edges_list...))
 
