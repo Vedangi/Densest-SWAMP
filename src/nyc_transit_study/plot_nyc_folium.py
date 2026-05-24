@@ -2,17 +2,14 @@
 """
 plot_nyc_solution_folium.py
 
-Plot Densest-SWAMP / hypergraph solutions on an NYC subway map with
-interactive parameter selection (n, p).
+Plot Densest-SWAMP solutions on an NYC rapid transit map with
+interactive parameter selection (|S|, p).
 
 Solutions are stored as a tuple-keyed dict:
     SOLUTIONS[(n, p)] = [node_id, node_id, ...]
 
-The output HTML contains two dropdowns (n and p) in the top-right.
-Selecting a combination:
-    - hides every solution layer
-    - shows the layer for that (n, p)
-    - rewrites the summary box on the left
+The output HTML contains two dropdowns (|S| and p) in the top-right.
+Selecting a combination shows the solution for that (|S|,p).
 
 Inputs:
     nyc_hypergraph_parent_ids.json
@@ -63,17 +60,12 @@ def format_p(p):
     """
     Canonical string for `p`, used both as the dropdown label and as the
     lookup key in layer_name_by_key / summary_by_key.
-
-    This is the SINGLE source of formatting truth. JS never reformats `p`;
-    it just consumes the strings we hand it. That avoids cross-language
-    disagreements like Python's '1e-08' vs JS's '1e-8' breaking lookups.
-
     Examples:
         0       -> "0"
         0.0     -> "0"
         0.9     -> "0.9"
         1e-3    -> "0.001"
-        1e-8    -> "1e-8"      (leading zero in the exponent is stripped)
+        1e-08    -> "1e-8"      (leading zero in the exponent is stripped)
         2.5e-12 -> "2.5e-12"
     """
     pf = float(p)
@@ -587,7 +579,7 @@ def add_interactive_controls(
 
 
 # -----------------------------
-# Diagnostic (unchanged)
+# Diagnostic 
 # -----------------------------
 def print_long_stop_to_stop_jumps(line2stations, pos_ll, threshold_km=3.0):
     for line, stations in line2stations.items():
