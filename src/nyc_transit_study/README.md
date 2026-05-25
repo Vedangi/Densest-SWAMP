@@ -13,7 +13,7 @@ A station served by multiple routes is called a transfer station.
 ---
 ## Input data
 
-The input is a GTFS static feed, which can be downloaded at and stored as a zip file called "gtfs_subway.zip".
+The input is a GTFS static feed, which can be downloaded at [https://www.mta.info/developers](https://www.mta.info/developers) and stored as a zip file called "gtfs_subway.zip".
 
 ## Main source files
 
@@ -320,6 +320,9 @@ Do not use station names as unique identifiers. Different physical stations may 
 
 ---
 
+## Plotting the metrics in the paper
+To reproduce the metric plots in the `figures` folder, run `plot_metrics.py`.
+
 ## Minimal reproducibility checklist
 
 To reproduce the same dataset and map, keep the following fixed:
@@ -343,5 +346,7 @@ project/
 ├── nyc_node_positions_subway.py
 ├── nyc_line_colors_subway.py
 ├── nyc_route_shapes_subway.json
+├── plot_metrics.py
 └── nyc_solution_map_subway.html
+
 ```
