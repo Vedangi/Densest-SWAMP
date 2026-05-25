@@ -18,6 +18,7 @@ The input is a GTFS static feed, which can be downloaded at and stored as a zip 
 ## Main source files
 
 `gen_nyc.py`: Processes GTFS zip file, and creates hypergraph dataset
+
 `nyc_plot_folium.py`: Reads the generated files the html "nyc_solution_map.html " file, loads solution nodes from `solution_list.py`, and creates an interactive map.
 
 The preprocessing script uses the following GTFS files.
