@@ -12,7 +12,7 @@
 #   2) ILP exact via JuMP + Gurobi using threshold variables y[e,t]
 #
 # NOTES:
-# - Greedy gives (1-1/e) approx for monotone submodular f under |S|=k.
+# - Greedy gives (1-1/e) approx for monotone submodular f under |S|<=k.
 # - ILP is exact (NP-hard worst-case; often fine for moderate sizes).
 ###############################################################################
 # ---------------------------- Utility: f(S) ----------------------------
@@ -59,7 +59,7 @@ end
     greedy_submodular_maximization(edges_list, vertex2edges, reward_d, k;
                                   edge_weights=nothing, rng=Random.default_rng())
 
-Greedy (Nemhauser) for max_{|S|=k} f(S) where f is monotone submodular.
+Greedy (Nemhauser) for max_{|S|<=k} f(S) where f is monotone submodular.
 
 Returns:
   (S::Set{Int}, fS::Float64)
@@ -158,7 +158,7 @@ end
 
 Exact MIP:
   max sum_e w_e * sum_{t=1..|e|} (r_e(t)-r_e(t-1)) * y[e,t]
-  s.t. sum_v x[v] = k
+  s.t. sum_v x[v] <= k
        sum_{v in e} x[v] >= t * y[e,t]
        x[v] ∈ {0,1}, y[e,t] ∈ {0,1}
 
@@ -225,7 +225,7 @@ function ilp_submodular_maximization_gurobi(
     end
 
     # Cardinality constraint
-    @constraint(model, sum(x) == k)
+    @constraint(model, sum(x) <= k)
 
     # Threshold constraints: sum_{v in e} x[v] >= t * y[e,t]
     for e in 1:m
