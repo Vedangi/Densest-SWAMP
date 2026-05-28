@@ -325,15 +325,7 @@ To reproduce the metric plots in the `figures` folder, run `plot_metrics.py`.
 
 ## Minimal reproducibility checklist
 
-To reproduce the same dataset and map, keep the following fixed:
-
-1. GTFS static feed zip file
-2. `gen_nyc.py`
-3. generated hypergraph files
-4. algorithm output stored in `solution_list.py`
-5. `nyc_plot_folium.py`
-
-A recommended project layout is:
+To reproduce the same dataset and map, a recommended project layout is:
 
 ```text
 project/
