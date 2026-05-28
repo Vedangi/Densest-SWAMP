@@ -333,12 +333,12 @@ project/
 ├── gen_nyc.py
 ├── nyc_plot_folium.py
 ├── solution_list.py
-├── nyc_hypergraph_parent_ids_subway.json
-├── nyc_lines_hypergraph_subway.txt
-├── nyc_node_positions_subway.py
-├── nyc_line_colors_subway.py
-├── nyc_route_shapes_subway.json
+├── nyc_hypergraph_parent_ids.json
+├── nyc_lines_hypergraph.txt
+├── nyc_node_positions.py
+├── nyc_line_colors.py
+├── nyc_route_shapes.json
 ├── plot_metrics.py
-└── nyc_solution_map_subway.html
+└── nyc_solution_map.html
 
 ```
